@@ -1,0 +1,10 @@
+build\.pl
+blib/.*
+.gitignore
+.git/.*
+Makefile$
+pm_to_blib
+MYMETA.*
+.*\.bak
+^IP-Tools-[0-9.]/$
+^IP-Tools-[0-9.]\.tar\.gz$

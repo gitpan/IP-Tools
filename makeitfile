@@ -1,0 +1,8 @@
+ip-tools.o: ip-tools.c ip-tools.h
+
+ip-tools.h: ip-tools.c
+	cfunctions -inc ip-tools.c
+
+# Local variables:
+# mode: makefile
+# End:

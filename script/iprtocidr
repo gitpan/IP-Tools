@@ -1,0 +1,15 @@
+#!/home/ben/software/install/bin/perl
+use warnings;
+use strict;
+use IP::Tools ':all';
+my $ip1 = $ARGV[0];
+my $ip2 = $ARGV[1];
+if ($ip2 =~ /-/) {
+    $ip2 = $ARGV[2];
+}
+my $cidr = ip_range_to_cidr ($ip1, $ip2);
+print $cidr, "\n";
+
+# Local variables:
+# mode: perl
+# End:
