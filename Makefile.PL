@@ -19,7 +19,9 @@ WriteMakefile (
             bugtracker => "$repo/issues",
         },
     },
-    EXE_FILES => ['script/iprtocidr'],
+    EXE_FILES => [
+        'script/iprtocidr',
+    ],
     OBJECT => 'Tools.o ip-tools.o',
 
     # Export these C functions to other Perl libraries.

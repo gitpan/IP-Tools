@@ -3,6 +3,9 @@ ip-tools.o: ip-tools.c ip-tools.h
 ip-tools.h: ip-tools.c
 	cfunctions -inc ip-tools.c
 
+clean:
+	-rm -f ip-tools.o ip-tools.h
+
 # Local variables:
 # mode: makefile
 # End:

@@ -28,7 +28,7 @@ require Exporter;
 
 @ISA = qw(Exporter DynaLoader);
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 __PACKAGE__->bootstrap ($VERSION);
 

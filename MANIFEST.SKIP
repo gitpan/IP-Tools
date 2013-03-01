@@ -8,3 +8,8 @@ MYMETA.*
 .*\.bak
 ^IP-Tools-[0-9.]/$
 ^IP-Tools-[0-9.]\.tar\.gz$
+.*\.o$
+# Outputs of XS / compilation.
+^Tools\.(o|c|bs)$
+# Compiled C file.
+^ip-tools\.o$
