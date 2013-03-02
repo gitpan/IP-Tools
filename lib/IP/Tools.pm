@@ -28,7 +28,7 @@ require Exporter;
 
 @ISA = qw(Exporter DynaLoader);
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 __PACKAGE__->bootstrap ($VERSION);
 
@@ -58,10 +58,28 @@ use warnings;
 use strict;
 use Carp;
 
+=head2 $ip_re
+
+    if ($ip =~ /$ip_re/) {
+    }
+
+This regular expression matches an ip address.
+
+=cut
+
 our $ip_re = qr/
                    (?:\d+\.){3}
                    \d+
                /x;
+
+=head2 $cidr_re
+
+    if ($ip =~ /$ip_re/) {
+    }
+
+This regular expression matches a CIDR.
+
+=cut
 
 our $cidr_re = qr!
                      ^
@@ -88,26 +106,6 @@ sub split_ip
 Convert an IP address to an integer.
 
 =cut
-
-# sub ip_to_int
-# {
-#     my ($ip) = @_;
-#     my @bytes = split /\./, $ip;
-#     if (@bytes != 4) {
-#         my $n_bytes = scalar @bytes;
-#         my $error = <<EOF;
-# The ip address '$ip' has the wrong number of parts, $n_bytes. It
-# should have four parts, like 1.2.3.4, separated by dots.
-# EOF
-#         return (-1, $error);
-#     }
-#     my $val = 0;
-#     for (@bytes) {
-#         $val *= 0x100;
-#         $val += $_;
-#     }
-#     return $val;
-# }
 
 =head2 int_to_ip
 
@@ -263,6 +261,12 @@ EOF
 }
 
 =head2 ip_range_to_cidr
+
+    ip_range_to_cidr ($ip1, $ip2);
+
+Given two IP addresses, return the difference as a CIDR.
+
+This is not able to split into multiple CIDRs.
 
 =cut
 

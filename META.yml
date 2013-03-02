@@ -21,4 +21,4 @@ requires: {}
 resources:
   bugtracker: https://github.com/benkasminbullock/IP-Tools/issues
   repository: https://github.com/benkasminbullock/IP-Tools
-version: 0.02
+version: 0.03

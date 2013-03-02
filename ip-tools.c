@@ -64,6 +64,9 @@ unsigned int ip_tools_ip_to_int (const char * ip)
     return v;
 }
 
+/* Search for "ip" in the structure "ip_blocks". "n_ip_ranges" is the
+   total number of members in "ip_blocks". */
+
 int ip_tools_ip_range (ip_block_t * ip_blocks, int n_ip_ranges, unsigned ip)
 {
     int i;
@@ -75,6 +78,8 @@ int ip_tools_ip_range (ip_block_t * ip_blocks, int n_ip_ranges, unsigned ip)
     while (1) {
         count++;
         if (count > 100) {
+            /* Trap for possible errors. 2^100 should be big
+               enough. */
             fprintf (stderr, "There is bad logic in the search.\n");
             exit (1);
         }
@@ -82,13 +87,11 @@ int ip_tools_ip_range (ip_block_t * ip_blocks, int n_ip_ranges, unsigned ip)
         if (division == 0) {
             division = 1;
         }
-        //        printf ("i is %d/%d; Division is %d\n", i, n_ip_ranges, division);
+        // printf ("i is %d/%d; Division is %d\n", i, n_ip_ranges, division);
         if (ip >= ip_blocks[i].start) {
             if (ip <= ip_blocks[i].end) {
+                /* "ip" is between the start and end of block i. */
                 return i;
-            }
-            else if (i == n_ip_ranges) {
-                /* i is as high as it may go */
             }
             else if (ip < ip_blocks[i + 1].start) {
                 /* "ip" is between the end of block i and the start of

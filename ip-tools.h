@@ -21,7 +21,7 @@ ip_block_t;
 #line 27 "ip-tools.c"
 unsigned int ip_tools_ip_to_int (const char * ip );
 
-#line 68 "ip-tools.c"
+#line 71 "ip-tools.c"
 int ip_tools_ip_range (ip_block_t * ip_blocks , int n_ip_ranges , unsigned ip );
 
 #endif /* CFH_IP_TOOLS_H */
