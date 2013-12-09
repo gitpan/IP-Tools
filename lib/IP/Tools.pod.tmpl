@@ -1,0 +1,114 @@
+=encoding UTF-8
+
+=head1 NAME
+
+IP::Tools - internet protocol address tools
+
+=head1 SYNOPSIS
+
+    use IP::Tools;
+
+=head1 DESCRIPTION
+
+A variety of tools for handling internet addresses. This module is a
+miscellaneous collection of things which was released to CPAN only to
+support another module, L<IP::China>. It may not be suitable for any
+other purpose, and its interface is liable to change without notice,
+so please use it with due caution.
+
+=head1 FUNCTIONS
+
+=head2 $ip_re
+
+    if ($ip =~ /$ip_re/) {
+    }
+
+This regular expression matches an ip address.
+
+=head2 $cidr_re
+
+    if ($ip =~ /$ip_re/) {
+    }
+
+This regular expression matches a CIDR.
+
+=head2 $ipr_re
+
+This regular expression matches a range of IP addresses
+
+=head2 ip_to_int
+
+    my $int = ip_to_int ($ip);
+
+Convert an IP address to an integer.
+
+=head2 int_to_ip
+
+    my $ip = int_to_ip ($int);
+
+Given an integer C<$int>, turn it into an IP address.
+
+=head2 cidr_to_ip_range
+
+    my ($ip1, $ip2) = cidr_to_ip_range ($ip, $bits);
+
+=head2 get_ip_range
+
+    my ($ip_range, $error) = get_ip_range ('12.23.34.56/13');
+
+Given a CIDR range, turn it into two ip addresses.
+
+=head2 ip_range_to_cidr
+
+    ip_range_to_cidr ($ip1, $ip2);
+
+Given two IP addresses, return the difference as a CIDR.
+
+This is not able to split into multiple CIDRs.
+
+=head2 read_whitelist
+
+    my @list = read_whitelist ('file.txt');
+
+    my @list = read_whitelist ('file.txt', 1);
+
+Read a whitelist from the specified file. The format is
+
+    # Comment line
+    127.0.0.0/15
+
+or alternatively
+
+    # Comment line
+    192.168.0.0 - 192.168.255.255
+
+The return value is a list of hash references. Each hash reference
+contains the following keys:
+
+=over
+
+=item line
+
+The line number of the IP range.
+
+=item lower
+
+The lower bound of the IP range.
+
+=item upper
+
+The upper bound of the IP range.
+
+=item comment
+
+The most recently seen comment line. Comments can thus be used to
+store additional information.
+
+=back
+
+=head2 search_whitelist
+
+Search a whitelist for an IP. This is a Perl version of the C code in
+L<IP::Whitelist>.
+
+[% INCLUDE "author" %]

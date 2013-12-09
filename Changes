@@ -1,0 +1,12 @@
+Revision history for perl module IP::Tools
+
+0.04 2013-12-09
+
+* Documentation updates / clarifications. Add licence.
+* Minimum Perl version (speculated as 5.6.1) in Makefile.PL.
+
+0.03 2013-03-01
+
+0.02 2013-02-28
+
+0.01 2013-02-28

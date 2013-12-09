@@ -1,21 +1,3 @@
-=encoding UTF-8
-
-=head1 NAME
-
-IP::Tools - internet protocol address tools
-
-=head1 SYNOPSIS
-
-    use IP::Tools;
-
-=head1 DESCRIPTION
-
-Do not use this module.
-
-=head1 FUNCTIONS
-
-=cut
-
 package IP::Tools;
 
 # See the following for the meaning of "dl_load_flags" and why it uses
@@ -28,7 +10,7 @@ require Exporter;
 
 @ISA = qw(Exporter DynaLoader);
 
-our $VERSION = 0.03;
+our $VERSION = 0.04;
 
 __PACKAGE__->bootstrap ($VERSION);
 
@@ -49,6 +31,7 @@ sub dl_load_flags
                    ip_range_to_cidr
                    $cidr_re
                    $ip_re
+                   $ipr_re
                /;
 
 %EXPORT_TAGS = (
@@ -58,31 +41,12 @@ use warnings;
 use strict;
 use Carp;
 
-=head2 $ip_re
-
-    if ($ip =~ /$ip_re/) {
-    }
-
-This regular expression matches an ip address.
-
-=cut
-
 our $ip_re = qr/
                    (?:\d+\.){3}
                    \d+
                /x;
 
-=head2 $cidr_re
-
-    if ($ip =~ /$ip_re/) {
-    }
-
-This regular expression matches a CIDR.
-
-=cut
-
 our $cidr_re = qr!
-                     ^
                      \s*
                      (
                          $ip_re
@@ -90,30 +54,27 @@ our $cidr_re = qr!
                      /
                      (\d+)
                      \s*
-                     $
                  !x;
+
+our $ipr_re = qr!
+		    \s*
+		    (
+			$ip_re
+		    )
+		    \s*
+		    -
+		    \s*
+		    (
+			$ip_re
+		    )
+		    \s*
+		!x;
 
 sub split_ip
 {
     my ($ip) = @_;
     return split /\./, $ip;
 }
-
-=head2 ip_to_int
-
-    my $int = ip_to_int ($ip);
-
-Convert an IP address to an integer.
-
-=cut
-
-=head2 int_to_ip
-
-    my $ip = int_to_ip ($int);
-
-Given an integer C<$int>, turn it into an IP address.
-
-=cut
 
 sub int_to_ip
 {
@@ -127,12 +88,6 @@ sub int_to_ip
     my $ip = join ".", reverse @bytes;
     return $ip;
 }
-
-=head2 cidr_to_ip_range
-
-    my ($ip1, $ip2) = cidr_to_ip_range ($ip, $bits);
-
-=cut
 
 sub cidr_to_ip_range
 {
@@ -151,14 +106,6 @@ sub cidr_to_ip_range
     my $upper = $lower + $add;
     return ($lower, $upper);
 }
-
-=head2 get_ip_range
-
-    my ($ip_range, $error) = get_ip_range ('12.23.34.56/13');
-
-Given a CIDR range, turn it into two ip addresses.
-
-=cut
 
 sub get_ip_range
 {
@@ -260,16 +207,6 @@ EOF
     return ($cidr, $error);
 }
 
-=head2 ip_range_to_cidr
-
-    ip_range_to_cidr ($ip1, $ip2);
-
-Given two IP addresses, return the difference as a CIDR.
-
-This is not able to split into multiple CIDRs.
-
-=cut
-
 sub ip_range_to_cidr
 {
     my ($ip1, $ip2) = @_;
@@ -297,19 +234,10 @@ sub ip_range_to_cidr
     return $cidr;
 }
 
-=head2 read_whitelist
-
-    my @list = read_whitelist ('file.txt');
-
-    my @list = read_whitelist ('file.txt', 1);
-
-Read a whitelist from disc.
-
-=cut
-
 sub read_whitelist
 {
-    my ($infile, $verbose) = @_;
+    my ($infile, %options) = @_;
+    my $verbose = $options{verbose};
     open my $in, "<", $infile or die $!;
     my @ips;
     my $comment = '';
@@ -348,6 +276,20 @@ sub read_whitelist
             };
             next;
         }
+        if (/^$ipr_re$/) {
+	    my $lower = ip_to_int ($1);
+	    my $upper = ip_to_int ($2);
+            if ($verbose) {
+                printf "$infile:$.: %X - %X\n", $lower, $upper;
+            }
+            push @ips, {
+                lower => $lower,
+                upper => $upper,
+                line => $.,
+                comment => $comment,
+            };
+	    next;
+	}
         die "$infile:$.: Unparseable line '$_'.\n"
     }
     close $in or die $!;
@@ -356,22 +298,30 @@ sub read_whitelist
 
     @ips = sort {$a->{lower} <=> $b->{lower}} @ips;
 
+    if ($options{ignoredups}) {
+	my @nodups;
+	for my $i (0..$#ips - 1) {
+	    if ($ips[$i]->{upper} <= $ips[$i + 1]->{lower}) {
+		push @nodups, $ips[$i + 1];
+	    }
+	}
+	@ips = @nodups;
+    }
     # Check they are not overlapping.
 
     for my $i (0..$#ips - 1) {
         if ($ips[$i]->{upper} > $ips[$i + 1]->{lower}) {
-            die "$infile:$ips[$i]->{line}: upper range overlaps";
+	    my $error = "$infile:$ips[$i]->{line}: upper range overlaps with $ips[$i + 1]->{line}";
+	    if ($options{ignoredups}) {
+		warn "$error\n";
+	    }
+	    else {
+		die $error;
+	    }
         }
     }
     return @ips;
 }
-
-=head2 search_whitelist
-
-Search a whitelist for an IP. This is a Perl version of the C code in
-IP::Whitelist.
-
-=cut
 
 sub search_whitelist
 {
@@ -445,3 +395,4 @@ sub search_whitelist
 }
 
 1;
+

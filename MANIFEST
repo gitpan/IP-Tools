@@ -1,11 +1,17 @@
+Changes
 ip-tools.c
 ip-tools.h
 lib/IP/Tools.pm
+lib/IP/Tools.pod
+lib/IP/Tools.pod.tmpl
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
+README
 script/iprtocidr
+t/cidr-re.t
 t/IP-Tools.t
+t/test-whitelist.txt
 Tools.xs
 META.yml                                 Module YAML meta-data (added by MakeMaker)
 META.json                                Module JSON meta-data (added by MakeMaker)

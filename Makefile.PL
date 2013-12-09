@@ -4,6 +4,7 @@ use ExtUtils::MakeMaker;
 use ExtUtils::Mksymlists;
 
 my $pm = 'lib/IP/Tools.pm';
+my $pod = 'lib/IP/Tools.pod';
 my $repo = 'https://github.com/benkasminbullock/IP-Tools';
 my $name = 'IP::Tools';
 
@@ -30,7 +31,7 @@ if ($^O eq 'MSWin32') {
 WriteMakefile (
     NAME => $name,
     VERSION_FROM => $pm,
-    ABSTRACT_FROM => $pm,
+    ABSTRACT_FROM => $pod,
     AUTHOR => 'Ben Bullock <bkb@cpan.org>',
     LICENSE => 'perl',
     PREREQ_PM => {
@@ -45,4 +46,6 @@ WriteMakefile (
         'script/iprtocidr',
     ],
     OBJECT => 'Tools.o ip-tools.o',
+    # Speculated necessary version of Perl.
+    MIN_PERL_VERSION => '5.006001',
 );
